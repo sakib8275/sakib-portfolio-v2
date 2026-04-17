@@ -1,0 +1,208 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Insights — MD. Nazmus Sakib">
+  <!-- Reading progress bar — fills as you scroll -->
+  <div class="reading-progress" id="readingProgress"></div>
+
+  <Navbar />
+
+  <!-- Post content is injected here by JS -->
+  <div id="postMount"></div>
+
+  <Footer />
+
+  <script is:inline src="/posts.js"></script>
+  <script is:inline>
+    // Reading progress bar
+    window.addEventListener('scroll', () => {
+      const doc    = document.documentElement;
+      const scrolled = doc.scrollTop;
+      const total    = doc.scrollHeight - doc.clientHeight;
+      const pct      = total > 0 ? (scrolled / total) * 100 : 0;
+      document.getElementById('readingProgress').style.width = pct + '%';
+    });
+
+    // Utilities
+    function escHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function safeUrl(url) {
+      try {
+        const u = new URL(String(url));
+        return (u.protocol === 'https:' || u.protocol === 'http:') ? url : '#';
+      } catch { return '#'; }
+    }
+
+    function formatDate(iso) {
+      try {
+        return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+      } catch { return iso; }
+    }
+
+    const CATEGORY_LABELS = {
+      analysis:        'Analysis',
+      thoughts:        'Thoughts',
+      recommendations: 'Recommendations',
+      notes:           'Notes',
+    };
+
+    const BADGE_CLASSES = {
+      analysis:        'badge-analysis',
+      thoughts:        'badge-thoughts',
+      recommendations: 'badge-recommendations',
+      notes:           'badge-notes',
+    };
+
+    // Content block renderers
+    function renderParagraph(block) {
+      return `<p>${escHtml(block.text)}</p>`;
+    }
+
+    function renderHeading(block) {
+      return `<h2>${escHtml(block.text)}</h2>`;
+    }
+
+    function renderQuote(block) {
+      return `<blockquote>${escHtml(block.text)}${block.attribution ? `<footer>\u2014 ${escHtml(block.attribution)}</footer>` : ''}</blockquote>`;
+    }
+
+    function renderAffiliateLink(link) {
+      if (!link) return '';
+      if (link.affiliate) {
+        return `<a href="${escHtml(safeUrl(link.url))}"
+                   class="affiliate-cta"
+                   target="_blank"
+                   rel="nofollow sponsored noopener noreferrer"
+                >${escHtml(link.text)} &#8599;</a>`;
+      }
+      return `<a href="${escHtml(safeUrl(link.url))}"
+                 class="btn-outline"
+                 style="font-size:0.85rem;padding:9px 20px;display:inline-flex;"
+                 target="_blank"
+                 rel="noopener noreferrer"
+              >${escHtml(link.text)} &#8599;</a>`;
+    }
+
+    function renderBook(block) {
+      return `
+        <div class="book-card">
+          <div class="book-card-title">${escHtml(block.title)}</div>
+          <p class="book-card-desc">${escHtml(block.description)}</p>
+          ${block.link ? renderAffiliateLink(block.link) : ''}
+        </div>`;
+    }
+
+    function renderBlock(block) {
+      switch (block.type) {
+        case 'paragraph': return renderParagraph(block);
+        case 'heading':   return renderHeading(block);
+        case 'quote':     return renderQuote(block);
+        case 'book':      return renderBook(block);
+        default:          return '';
+      }
+    }
+
+    function renderAffiliateDisclosure() {
+      return `
+        <div class="affiliate-disclosure">
+          <strong>Disclosure:</strong> This post contains affiliate links. If you purchase through
+          these links, I may earn a small commission at no additional cost to you. I only recommend
+          resources I\u2019ve personally found valuable.
+        </div>`;
+    }
+
+    // Main render
+    function renderPost(post) {
+      const badgeClass = BADGE_CLASSES[post.category] || 'badge-analysis';
+      const label      = CATEGORY_LABELS[post.category] || post.category;
+      const tagsHtml   = (post.tags || [])
+        .map(t => `<span class="tag">${escHtml(t)}</span>`).join('');
+      const contentHtml = post.content.map(renderBlock).join('\n');
+      const disclosureHtml = post.affiliate ? renderAffiliateDisclosure() : '';
+
+      return `
+        <div class="article-page">
+
+          <a href="/insights" class="article-back-link">
+            &#8592; Back to Insights
+          </a>
+
+          <header class="article-header">
+            <div class="article-label">
+              <span class="news-badge ${escHtml(badgeClass)}">${escHtml(label)}</span>
+            </div>
+
+            <h1 class="article-title">${escHtml(post.title)}</h1>
+            <p class="article-subtitle">${escHtml(post.excerpt)}</p>
+
+            <div class="article-meta-row">
+              <span class="article-meta-item">&#128197; ${escHtml(formatDate(post.date))}</span>
+              <span class="article-meta-item">&#9201; ${escHtml(String(post.readTime))} min read</span>
+            </div>
+
+            ${tagsHtml ? `<div class="article-tags-row">${tagsHtml}</div>` : ''}
+          </header>
+
+          <div class="article-body">
+            ${contentHtml}
+            ${disclosureHtml}
+          </div>
+
+        </div>`;
+    }
+
+    // Bootstrap
+    document.addEventListener('DOMContentLoaded', () => {
+      const slug = new URLSearchParams(window.location.search).get('slug');
+      const post = slug && typeof POSTS !== 'undefined' ? POSTS.find(p => p.slug === slug) : null;
+      const mount = document.getElementById('postMount');
+
+      if (!post) {
+        mount.innerHTML = `
+          <div class="article-page" style="text-align:center;padding-top:140px">
+            <p style="font-size:1.1rem;color:var(--text-muted);margin-bottom:24px">Post not found.</p>
+            <a href="/insights" class="btn-primary">&#8592; Back to Insights</a>
+          </div>`;
+        return;
+      }
+
+      // Inject content
+      mount.innerHTML = renderPost(post);
+
+      // Update page meta via JS (though Astro ideally does it server-side)
+      const canonicalUrl = `https://sakib8275.com/insight?slug=${encodeURIComponent(post.slug)}`;
+      document.title = `${post.title} \u2014 MD. Nazmus Sakib`;
+
+      const setMeta = (sel, val) => {
+        const el = document.querySelector(sel);
+        if (el) el.setAttribute(el.hasAttribute('content') ? 'content' : 'href', val);
+        else {
+            // create it
+            const newEl = document.createElement(sel.startsWith('link') ? 'link' : 'meta');
+            const attrArray = sel.match(/\w+|"[^"]+"/g);
+            if (attrArray && attrArray.length >= 2) {
+                const attrName = attrArray[1];
+                const attrVal = attrArray[2].replace(/"/g, '');
+                newEl.setAttribute(attrName, attrVal);
+                if (sel.startsWith('link')) newEl.setAttribute('href', val);
+                else newEl.setAttribute('content', val);
+                document.head.appendChild(newEl);
+            }
+        }
+      };
+
+      setMeta('meta[name="description"]',       post.excerpt);
+      setMeta('meta[property="og:title"]',      post.title);
+      setMeta('meta[property="og:description"]', post.excerpt);
+      setMeta('meta[property="og:url"]',        canonicalUrl);
+      setMeta('link[rel="canonical"]',          canonicalUrl);
+    });
+  </script>
+</Layout>

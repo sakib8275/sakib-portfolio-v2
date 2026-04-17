@@ -1,0 +1,340 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<Layout title="Agent Banking in Bangladesh: A New Growth Sector — MD. Nazmus Sakib">
+  <Navbar />
+
+  <main class="article-page">
+
+    <a href="/research" class="article-back-link">← Back to Research</a>
+
+    <header class="article-header">
+      <p class="section-label article-label">Research &amp; Analysis</p>
+      <h1 class="article-title">Agent Banking in Bangladesh: A New Growth Sector for the Banking Industry</h1>
+      <p class="article-subtitle">An econometric analysis of the top six agent banking performers in Bangladesh — identifying why BRAC Bank's lending-first model drives sustainable financial inclusion while competitors stagnate on deposit-only strategies.</p>
+      <div class="article-meta-row">
+        <span class="article-meta-item">✍ MD. Nazmus Sakib</span>
+        <span class="article-meta-item">📅 March 2020</span>
+        <span class="article-meta-item">⏱ 12 min read</span>
+        <span class="article-meta-item">🎓 MBA Thesis, IBA — University of Dhaka</span>
+      </div>
+      <div class="article-tags-row">
+        <span class="tag">Agent Banking</span>
+        <span class="tag">Bangladesh</span>
+        <span class="tag">Financial Inclusion</span>
+        <span class="tag">Fintech</span>
+        <span class="tag">Banking</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+
+      <h2>Abstract</h2>
+      <p>
+        Agent banking has emerged as one of the most promising instruments for financial inclusion in Bangladesh,
+        extending formal banking services to the unbanked population — particularly in rural and semi-urban areas
+        where branch infrastructure is economically unviable. This paper analyses the operational models, growth
+        trajectories, and sustainability metrics of the top six agent banking performers in Bangladesh between
+        2017 and 2022, with a focus on understanding what differentiates high-performing institutions from the rest.
+      </p>
+      <p>
+        Through econometric analysis of Bangladesh Bank data and annual reports, I find that <strong>BRAC Bank's
+        lending-first model</strong> — providing credit through agent channels rather than restricting agents to
+        deposit and payment functions — is the primary differentiator for long-term, sustainable growth and genuine
+        financial inclusion impact.
+      </p>
+
+      <h2>Background: Agent Banking in Bangladesh</h2>
+      <p>
+        Bangladesh Bank issued the Agent Banking Guidelines in 2013, allowing scheduled banks to deliver limited
+        banking services through third-party agents — typically mobile phone retailers, pharmacies, or small shop
+        owners — equipped with point-of-sale devices and biometric authentication.
+      </p>
+      <p>
+        The policy was motivated by a structural gap: as of 2013, only 31% of Bangladeshi adults held a formal
+        bank account, with rural penetration below 20%. Physical branch expansion was cost-prohibitive; the
+        average cost of operating a rural branch exceeded BDT 5 million per year, with most rural branches
+        remaining loss-making for 3–5 years post-opening.
+      </p>
+      <p>
+        Agent banking offered a lower-cost alternative: agents operate on a commission basis, requiring no
+        fixed staff, no owned premises, and minimal technology infrastructure beyond a mobile device and
+        reliable internet connectivity.
+      </p>
+
+      <blockquote>
+        "The average agent banking outlet costs a bank approximately BDT 18,000 per year to maintain — compared
+        to BDT 5 million for a rural branch. The economics are not marginal; they are transformative."
+      </blockquote>
+
+      <h2>Industry Growth: 2017–2024</h2>
+      <p>
+        The sector has experienced compounding growth since 2017. From approximately 6,400 active agent outlets
+        nationwide, the network has expanded to over 28,000 by 2024 — a 4.4x increase in seven years.
+        Transaction values have grown even faster, reflecting both network expansion and deepening usage per outlet.
+      </p>
+
+      <div class="chart-container">
+        <div class="chart-container-title">Agent Banking Outlets — Industry Growth (2017–2024)</div>
+        <div class="chart-wrap">
+          <canvas id="chart1"></canvas>
+        </div>
+      </div>
+
+      <p>
+        The growth has not been linear. A notable acceleration occurred in 2020–2021, driven by COVID-19 pandemic
+        effects: branch closures, mobility restrictions, and government social protection payments disbursed
+        digitally through agent banking channels created a structural step-change in adoption and trust.
+      </p>
+
+      <h2>Transaction Volume Trends</h2>
+      <p>
+        Raw outlet count understates the sector's true trajectory. Transaction volumes — measured in total BDT
+        value processed — have grown at a compound annual rate of approximately 45% between 2017 and 2024,
+        reflecting both new user acquisition and rising transaction frequency among existing users.
+      </p>
+
+      <div class="chart-container">
+        <div class="chart-container-title">Total Transaction Volume — BDT Billion (2017–2024)</div>
+        <div class="chart-wrap">
+          <canvas id="chart2"></canvas>
+        </div>
+      </div>
+
+      <p>
+        The gap between outlet growth (4.4x) and transaction value growth (13.8x) indicates that average revenue
+        per outlet has increased by approximately 3x — a signal of maturing usage behaviour, not just network
+        expansion. Users are shifting from occasional to regular use, and the transaction mix is moving towards
+        higher-value payments such as remittances and salary disbursement.
+      </p>
+
+      <h2>Bank-by-Bank Comparison: Top 6 Performers</h2>
+      <p>
+        Among the six banks with the largest agent banking networks as of 2022, BRAC Bank maintained a clear
+        leadership position both in absolute outlet count and in growth rate. The following chart compares
+        2020 and 2022 outlet counts for the top six, revealing both the scale of BRAC Bank's dominance and
+        the divergence in growth rates.
+      </p>
+
+      <div class="chart-container">
+        <div class="chart-container-title">Top 6 Banks by Agent Outlets — 2020 vs. 2022 Comparison</div>
+        <div class="chart-wrap" style="height:340px;">
+          <canvas id="chart3"></canvas>
+        </div>
+      </div>
+
+      <p>
+        Two patterns stand out. First, BRAC Bank's outlet count grew by 81% over the period — significantly
+        faster than any competitor. Second, the gap between BRAC Bank and Dutch-Bangla Bank (the second-largest
+        network) widened substantially, from approximately 400 outlets in 2020 to over 1,600 in 2022.
+      </p>
+
+      <h2>The Lending-First Model: Key Findings</h2>
+      <p>
+        The central research question was: <strong>what explains BRAC Bank's sustained outperformance?</strong>
+        The econometric analysis points to a structural difference in business model design rather than
+        operational or technological advantages.
+      </p>
+
+      <h3>Deposit-Only vs. Lending-First</h3>
+      <p>
+        Most agent banking operators in Bangladesh use agents as deposit-taking and payment-processing nodes.
+        Customers open accounts, receive salary payments, and send/receive remittances through agents — but
+        credit access requires a visit to a physical branch.
+      </p>
+      <p>
+        BRAC Bank, by contrast, extended its microfinance lending capabilities through agent banking channels
+        from an early stage. Agents can initiate loan applications, conduct preliminary KYC, and serve as
+        loan repayment collection points. This creates a fundamentally different value proposition:
+        customers are not just stored-value accounts, but active credit customers with deeper bank relationships.
+      </p>
+
+      <h3>Why Lending-First Drives Sustainable Inclusion</h3>
+      <ul>
+        <li><strong>Higher customer retention:</strong> Credit customers have a functional reason to maintain an active account. Deposit-only customers frequently become dormant within 6–12 months of account opening.</li>
+        <li><strong>Recurring transaction volumes:</strong> Loan disbursements and repayments generate predictable, recurring transaction flows that sustain agent commission income — creating economic incentive for agent retention.</li>
+        <li><strong>Deeper financial inclusion:</strong> Access to credit, not just a deposit account, is the primary mechanism through which the financially excluded household can smooth consumption, invest in productive assets, and build credit history. Deposit-only models create accounts; lending-first models create financial inclusion.</li>
+        <li><strong>Agent loyalty:</strong> Agents earning commission on loan origination and repayment collection have materially higher incomes than agents limited to deposit/payment services, reducing churn and improving service quality.</li>
+      </ul>
+
+      <blockquote>
+        The deposit-only model treats agent banking as a distribution channel. The lending-first model treats it
+        as a relationship-building infrastructure. The data shows that only the latter produces sustainable,
+        compounding growth.
+      </blockquote>
+
+      <h2>Conclusion &amp; Implications</h2>
+      <p>
+        Bangladesh's agent banking sector has demonstrated that the infrastructure for mass financial inclusion
+        exists and is scalable. The sector's 7-year growth trajectory is among the fastest of any comparable
+        market globally. However, the data reveals a critical bifurcation: institutions that confine agent
+        banking to deposit and payment functions are growing more slowly and building shallower customer
+        relationships than those that extend credit through the same channels.
+      </p>
+      <p>
+        For policymakers at Bangladesh Bank, the implication is clear: regulatory frameworks that restrict agent
+        banking to passive financial services — while understandable from a risk management perspective —
+        constrain the sector's potential to deliver genuine financial inclusion at scale. A phased, risk-tiered
+        approach to agent-originated credit, with appropriate safeguards, would accelerate inclusion without
+        materially increasing systemic risk.
+      </p>
+      <p>
+        For banking practitioners, the strategic lesson is that agent banking viewed as a cost-reduction exercise
+        will produce modest, easily-competed-away gains. Agent banking viewed as a new channel for relationship
+        banking — capable of initiating, deepening, and retaining credit relationships with previously unbanked
+        households — has the potential to reshape Bangladesh's retail banking landscape over the next decade.
+      </p>
+
+    </div>
+
+  </main>
+
+  <Footer />
+</Layout>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    Chart.defaults.color = '#94a3b8';
+    Chart.defaults.borderColor = 'rgba(148,163,184,0.12)';
+
+    const ACCENT       = '#14b8a6';
+    const ACCENT_LIGHT = '#5eead4';
+    const ACCENT_FILL  = 'rgba(20,184,166,0.25)';
+    const ACCENT_FILL2 = 'rgba(94,234,212,0.35)';
+    const GRID         = 'rgba(148,163,184,0.06)';
+    const TOOLTIP_OPTS = {
+      backgroundColor: '#1e293b',
+      borderColor: ACCENT,
+      borderWidth: 1,
+      titleColor: '#e2e8f0',
+      bodyColor: '#94a3b8',
+      padding: 10,
+    };
+
+    // Chart 1 — Agent Banking Outlets Growth (Bar)
+    new Chart(document.getElementById('chart1').getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: ['2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024'],
+        datasets: [{
+          label: 'Agent Outlets',
+          data: [6420, 9850, 13400, 16800, 18500, 22000, 24600, 28000],
+          backgroundColor: ACCENT_FILL,
+          borderColor: ACCENT,
+          borderWidth: 2,
+          borderRadius: 6,
+          hoverBackgroundColor: 'rgba(94,234,212,0.3)',
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { ...TOOLTIP_OPTS,
+            callbacks: { label: (ctx: any) => ' ' + ctx.parsed.y.toLocaleString() + ' outlets' }
+          }
+        },
+        scales: {
+          x: { grid: { color: GRID } },
+          y: {
+            grid: { color: GRID },
+            ticks: { callback: (v: any) => v.toLocaleString() },
+            title: { display: true, text: 'Number of Outlets', color: '#64748b', font: { size: 11 } }
+          }
+        }
+      }
+    });
+
+    // Chart 2 — Transaction Volume Line Chart
+    new Chart(document.getElementById('chart2').getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: ['2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024'],
+        datasets: [{
+          label: 'Transaction Volume (BDT Billion)',
+          data: [45, 89, 156, 210, 285, 380, 490, 620],
+          borderColor: ACCENT,
+          backgroundColor: ACCENT_FILL,
+          pointBackgroundColor: ACCENT,
+          pointBorderColor: '#0f172a',
+          pointRadius: 5,
+          pointHoverRadius: 7,
+          fill: true,
+          tension: 0.4,
+          borderWidth: 2,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { ...TOOLTIP_OPTS,
+            callbacks: { label: (ctx: any) => ' BDT ' + ctx.parsed.y + ' Billion' }
+          }
+        },
+        scales: {
+          x: { grid: { color: GRID } },
+          y: {
+            grid: { color: GRID },
+            ticks: { callback: (v: any) => 'BDT ' + v + 'B' },
+            title: { display: true, text: 'BDT Billion', color: '#64748b', font: { size: 11 } }
+          }
+        }
+      }
+    });
+
+    // Chart 3 — Bank Comparison Horizontal Bar Chart
+    new Chart(document.getElementById('chart3').getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: ['BRAC Bank', 'Dutch-Bangla Bank', 'Islami Bank BD', 'Bank Asia', 'Al-Arafah Islami', 'Shahjalal Islami'],
+        datasets: [
+          {
+            label: '2020',
+            data: [3200, 2800, 2100, 1600, 800, 600],
+            backgroundColor: ACCENT_FILL,
+            borderColor: ACCENT,
+            borderWidth: 2,
+            borderRadius: 4,
+          },
+          {
+            label: '2022',
+            data: [5800, 4200, 3100, 2400, 1200, 900],
+            backgroundColor: ACCENT_FILL2,
+            borderColor: ACCENT_LIGHT,
+            borderWidth: 2,
+            borderRadius: 4,
+          }
+        ]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            labels: { color: '#94a3b8', font: { size: 12 }, boxWidth: 14, padding: 20 }
+          },
+          tooltip: { ...TOOLTIP_OPTS,
+            callbacks: { label: (ctx: any) => ' ' + ctx.dataset.label + ': ' + ctx.parsed.x.toLocaleString() + ' outlets' }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: GRID },
+            ticks: { callback: (v: any) => v.toLocaleString() },
+            title: { display: true, text: 'Number of Agent Outlets', color: '#64748b', font: { size: 11 } }
+          },
+          y: { grid: { color: GRID } }
+        }
+      }
+    });
+  });
+</script>

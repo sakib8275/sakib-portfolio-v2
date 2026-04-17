@@ -1,0 +1,150 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Insights — MD. Nazmus Sakib">
+  <Navbar />
+
+  <div class="news-page-hero">
+    <div class="container">
+      <p class="section-label fade-up">Personal Writing Hub</p>
+      <h1 class="section-title fade-up fade-up-delay-1">Insights</h1>
+      <p class="section-desc fade-up fade-up-delay-2">Analysis, recommendations and thoughts from 8 years at the intersection of banking and technology.</p>
+    </div>
+  </div>
+
+  <div class="news-content-wrap">
+    <div class="container">
+
+      <div class="news-status-bar">
+        <span class="news-last-updated" id="insightsStatus"></span>
+      </div>
+
+      <div class="filter-tabs" id="filterTabs">
+        <button class="filter-tab active" data-filter="all">All <span class="tab-count" id="ins-count-all"></span></button>
+        <button class="filter-tab" data-filter="analysis">Analysis <span class="tab-count" id="ins-count-analysis"></span></button>
+        <button class="filter-tab" data-filter="thoughts">Thoughts <span class="tab-count" id="ins-count-thoughts"></span></button>
+        <button class="filter-tab" data-filter="recommendations">Recommendations <span class="tab-count" id="ins-count-recommendations"></span></button>
+        <button class="filter-tab" data-filter="notes">Notes <span class="tab-count" id="ins-count-notes"></span></button>
+      </div>
+
+      <div id="insightsGrid"></div>
+
+    </div>
+  </div>
+
+  <Footer />
+
+  <script is:inline src="/posts.js"></script>
+  <script is:inline>
+    // Config
+    const CATEGORY_LABELS = {
+      analysis:        'Analysis',
+      thoughts:        'Thoughts',
+      recommendations: 'Recommendations',
+      notes:           'Notes',
+    };
+
+    const BADGE_CLASSES = {
+      analysis:        'badge-analysis',
+      thoughts:        'badge-thoughts',
+      recommendations: 'badge-recommendations',
+      notes:           'badge-notes',
+    };
+
+    const CATEGORIES = ['analysis', 'thoughts', 'recommendations', 'notes'];
+
+    let currentFilter = 'all';
+
+    // Utilities
+    function escHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function safeUrl(url) {
+      try {
+        const u = new URL(String(url));
+        return (u.protocol === 'https:' || u.protocol === 'http:') ? url : '#';
+      } catch { return '#'; }
+    }
+
+    function formatDate(iso) {
+      try {
+        return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+      } catch { return iso; }
+    }
+
+    // Render
+    function renderCard(post) {
+      const badgeClass    = escHtml(BADGE_CLASSES[post.category] || 'badge-analysis');
+      const label         = escHtml(CATEGORY_LABELS[post.category] || post.category);
+      const postUrl       = `/insight?slug=${encodeURIComponent(post.slug)}`;
+      const affiliateBadge = post.affiliate
+        ? `<span class="affiliate-badge">&#x1F517; Affiliate</span>`
+        : '';
+
+      return `
+        <a class="news-card insight-card-link cat-${escHtml(post.category)}"
+           href="${escHtml(safeUrl(postUrl))}">
+          <div class="news-card-header">
+            <span class="news-source">${escHtml(post.readTime)} min read</span>
+            <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
+              ${affiliateBadge}
+              <span class="news-badge ${badgeClass}">${label}</span>
+            </div>
+          </div>
+          <div class="news-card-body">
+            <div class="news-card-title">${escHtml(post.title)}</div>
+            <div class="news-card-desc">${escHtml(post.excerpt)}</div>
+            <div class="news-card-footer">
+              <span class="news-card-date">${formatDate(post.date)}</span>
+              <span class="news-read-more">Read More &#8594;</span>
+            </div>
+          </div>
+        </a>`;
+    }
+
+    function renderGrid(posts) {
+      const grid = document.getElementById('insightsGrid');
+      if (!posts.length) {
+        grid.innerHTML = `<div class="news-empty">No posts in this category yet. Check back soon.</div>`;
+        return;
+      }
+      grid.innerHTML = `<div class="news-grid">${posts.map(renderCard).join('')}</div>`;
+    }
+
+    function updateCounts(posts) {
+      document.getElementById('ins-count-all').textContent = posts.length || '';
+      CATEGORIES.forEach(cat => {
+        const el = document.getElementById(`ins-count-${cat}`);
+        const n  = posts.filter(p => p.category === cat).length;
+        if (el) el.textContent = n || '';
+      });
+    }
+
+    function setFilter(cat) {
+      currentFilter = cat;
+      document.querySelectorAll('.filter-tab').forEach(btn =>
+        btn.classList.toggle('active', btn.dataset.filter === cat));
+      const filtered = cat === 'all' ? POSTS : POSTS.filter(p => p.category === cat);
+      renderGrid(filtered);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.filter-tab').forEach(tab =>
+        tab.addEventListener('click', () => setFilter(tab.dataset.filter)));
+
+      if (typeof POSTS !== 'undefined') {
+        updateCounts(POSTS);
+        document.getElementById('insightsStatus').textContent =
+          `${POSTS.length} post${POSTS.length !== 1 ? 's' : ''}`;
+        renderGrid(POSTS);
+      }
+    });
+
+  </script>
+</Layout>

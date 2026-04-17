@@ -1,0 +1,306 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Bangladesh Fintech News — MD. Nazmus Sakib">
+  <Navbar />
+
+  <div class="news-page-hero">
+    <div class="container">
+      <p class="section-label fade-up">Industry Intelligence</p>
+      <h1 class="section-title fade-up fade-up-delay-1">Bangladesh Fintech News</h1>
+      <p class="section-desc fade-up fade-up-delay-2">Live-aggregated from Google News &mdash; covering Bangladesh fintech, digital banking, payment systems, regulatory updates, and digital credit. Auto-refreshes every 30 minutes.</p>
+    </div>
+  </div>
+
+  <div class="news-content-wrap">
+    <div class="container">
+
+      <div class="news-status-bar">
+        <span class="news-last-updated" id="lastUpdated">Loading feeds&hellip;</span>
+        <button class="btn-refresh" id="refreshBtn">&#8635; Refresh</button>
+      </div>
+
+      <div class="filter-tabs" id="filterTabs">
+        <button class="filter-tab active" data-filter="all">All <span class="tab-count" id="count-all"></span></button>
+        <button class="filter-tab" data-filter="fintech">&#x1F4B3; Fintech <span class="tab-count" id="count-fintech"></span></button>
+        <button class="filter-tab" data-filter="digital-banking">&#x1F3E6; Digital Banking <span class="tab-count" id="count-digital-banking"></span></button>
+        <button class="filter-tab" data-filter="payments">&#x1F4B8; Payments <span class="tab-count" id="count-payments"></span></button>
+        <button class="filter-tab" data-filter="regulatory">&#x1F4CB; Regulatory <span class="tab-count" id="count-regulatory"></span></button>
+        <button class="filter-tab" data-filter="lending">&#x1F4CA; Digital Lending <span class="tab-count" id="count-lending"></span></button>
+      </div>
+
+      <div id="newsGrid"></div>
+
+    </div>
+  </div>
+
+  <Footer />
+
+  <script is:inline>
+    // ============================================================
+    // NEWS AGGREGATOR
+    // Fetches Google News RSS via Astro API route.
+    // Parses XML with native DOMParser.
+    // ============================================================
+    const PROXIES = [
+      url => `/api/fetch-news?url=${encodeURIComponent(url)}`,
+    ];
+
+    const FEEDS = [
+      {
+        url: 'https://news.google.com/rss/search?q=("fintech"+OR+"digital+banking"+OR+"digital+payment"+OR+"payment+switch")+AND+Bangladesh&hl=en-US&gl=US&ceid=US:en',
+        source: 'Google News',
+      },
+      {
+        url: 'https://news.google.com/rss/search?q=("Bangladesh+Bank"+OR+"digital+lending"+OR+"credit+core"+OR+"digital+credit")+AND+Bangladesh&hl=en-US&gl=US&ceid=US:en',
+        source: 'Google News',
+      },
+      {
+        url: 'https://news.google.com/rss/search?q=("alternative+credit+scoring"+OR+"credit+scoring+algorithm"+OR+"digital+lending+market"+OR+"fintech+lending")+Bangladesh&hl=en-US&gl=US&ceid=US:en',
+        source: 'Google News',
+      },
+      { url: 'https://thefinancialexpress.com.bd/feed',          source: 'Financial Express BD' },
+      { url: 'https://www.thedailystar.net/business/rss.xml',    source: 'The Daily Star'        },
+      { url: 'https://tbsnews.net/feed',                         source: 'TBS News'              },
+      { url: 'https://www.dhakatribune.com/business/feeds',      source: 'Dhaka Tribune'         },
+    ];
+
+    const KEYWORDS = {
+      'fintech':         ['fintech', 'bkash', 'nagad', 'mobile financial', 'mfs', 'mobile banking', 'digital wallet', 'rocket', 'upay', 'tap'],
+      'digital-banking': ['digital bank', 'internet banking', 'core banking', 'cbs', 'dfs', 'touchpay', 'online banking', 'e-banking', 'agent banking'],
+      'payments':        ['payment', 'npsb', 'rtgs', 'beftn', 'bacps', 'payment switch', 'interbank', 'settlement', 'transaction', 'remittance', 'qr code', 'pos'],
+      'regulatory':      ['bangladesh bank', 'central bank', 'bb circular', 'regulation', 'regulatory', 'guideline', 'policy', 'compliance', 'directive', 'bb order'],
+      'lending':         [
+        'digital lending', 'digital credit', 'online lending', 'digital loan', 'fintech lending',
+        'p2p lending', 'peer-to-peer lending', 'embedded lending', 'bnpl', 'buy now pay later',
+        'microcredit', 'microloan', 'microfinance', 'credit card', 'personal loan',
+        'credit scoring', 'credit score', 'alternative credit', 'alternative scoring',
+        'scoring algorithm', 'credit assessment', 'creditworthiness', 'credit risk',
+        'underwriting', 'ai credit', 'machine learning credit', 'ai scoring',
+        'credit bureau', 'credit information', 'cib', 'credit core', 'credit registry',
+        'credit platform', 'lending platform', 'loan management',
+        'lending market', 'credit market', 'loan market', 'lending startup',
+      ],
+    };
+
+    const BADGE_CLASSES = {
+      'fintech':         'badge-fintech',
+      'digital-banking': 'badge-digital-banking',
+      'payments':        'badge-payments',
+      'regulatory':      'badge-regulatory',
+      'lending':         'badge-lending',
+    };
+
+    const CATEGORY_LABELS = {
+      'fintech':         'Fintech',
+      'digital-banking': 'Digital Banking',
+      'payments':        'Payments',
+      'regulatory':      'Regulatory',
+      'lending':         'Digital Lending',
+    };
+
+    let allArticles   = [];
+    let currentFilter = 'all';
+
+    // Utilities
+    function escHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+    function safeUrl(url) {
+      try {
+        const u = new URL(String(url));
+        return (u.protocol === 'https:' || u.protocol === 'http:') ? url : '#';
+      } catch { return '#'; }
+    }
+    function stripHtml(str) {
+      try {
+        const el = document.createElement('div');
+        el.innerHTML = str;
+        return (el.textContent || el.innerText || '').trim();
+      } catch { return String(str).replace(/<[^>]*>/g, '').trim(); }
+    }
+    function categorize(title, desc) {
+      const text = (title + ' ' + desc).toLowerCase();
+      for (const [cat, words] of Object.entries(KEYWORDS)) {
+        if (words.some(k => text.includes(k))) return cat;
+      }
+      return 'fintech';
+    }
+    function relativeTime(dateStr) {
+      if (!dateStr) return '';
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return '';
+      const diff  = Date.now() - d.getTime();
+      const mins  = Math.floor(diff / 60000);
+      const hours = Math.floor(diff / 3600000);
+      const days  = Math.floor(diff / 86400000);
+      if (mins  < 1)  return 'just now';
+      if (mins  < 60) return `${mins}m ago`;
+      if (hours < 24) return `${hours}h ago`;
+      if (days  < 7)  return `${days}d ago`;
+      return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+    }
+
+    function skeletonCard() {
+      return `
+        <div class="news-card" style="pointer-events:none;cursor:default">
+          <div class="news-card-header">
+            <div class="skeleton-line short" style="margin:0"></div>
+            <div class="skeleton-badge"></div>
+          </div>
+          <div class="news-card-body">
+            <div class="skeleton-line title" style="margin-bottom:6px"></div>
+            <div class="skeleton-line title medium" style="margin-bottom:14px"></div>
+            <div class="skeleton-line full"></div>
+            <div class="skeleton-line full"></div>
+            <div class="skeleton-line medium" style="margin-bottom:14px"></div>
+            <div style="display:flex;justify-content:space-between;padding-top:12px;border-top:1px solid var(--border)">
+              <div class="skeleton-line short" style="margin:0;width:60px"></div>
+              <div class="skeleton-line short" style="margin:0;width:80px"></div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function showSkeleton() {
+      document.getElementById('newsGrid').innerHTML =
+        `<div class="news-grid">${Array.from({ length: 9 }, skeletonCard).join('')}</div>`;
+    }
+
+    function renderCard(a) {
+      const badgeClass = escHtml(BADGE_CLASSES[a.category] || 'badge-fintech');
+      const label      = escHtml(CATEGORY_LABELS[a.category] || 'News');
+      return `
+        <a class="news-card news-card-link cat-${escHtml(a.category)}"
+           href="${escHtml(safeUrl(a.link))}"
+           target="_blank" rel="noopener noreferrer">
+          <div class="news-card-header">
+            <span class="news-source">${escHtml(a.source)}</span>
+            <span class="news-badge ${badgeClass}">${label}</span>
+          </div>
+          <div class="news-card-body">
+            <div class="news-card-title">${escHtml(a.title)}</div>
+            <div class="news-card-desc">${escHtml(a.description)}</div>
+            <div class="news-card-footer">
+              <span class="news-card-date">${relativeTime(a.pubDate)}</span>
+              <span class="news-read-more">Read More &#8594;</span>
+            </div>
+          </div>
+        </a>`;
+    }
+
+    function renderArticles(articles) {
+      if (!articles.length) {
+        document.getElementById('newsGrid').innerHTML =
+          `<div class="news-empty">No articles for this category right now.
+           <button class="btn-refresh" onclick="doRefresh()" style="margin-left:12px">&#8635; Refresh</button></div>`;
+        return;
+      }
+      document.getElementById('newsGrid').innerHTML =
+        `<div class="news-grid">${articles.map(renderCard).join('')}</div>`;
+    }
+
+    function updateCounts(articles) {
+      const el = id => document.getElementById(id);
+      el('count-all').textContent = articles.length || '';
+      ['fintech','digital-banking','payments','regulatory','lending'].forEach(cat => {
+        const n = articles.filter(a => a.category === cat).length;
+        const badge = el(`count-${cat}`);
+        if (badge) badge.textContent = n || '';
+      });
+    }
+
+    function setFilter(cat) {
+      currentFilter = cat;
+      document.querySelectorAll('.filter-tab').forEach(btn =>
+        btn.classList.toggle('active', btn.dataset.filter === cat));
+      renderArticles(cat === 'all' ? allArticles : allArticles.filter(a => a.category === cat));
+    }
+
+    async function fetchFeed(feed) {
+      for (const proxy of PROXIES) {
+        try {
+          const res = await fetch(proxy(feed.url), { signal: AbortSignal.timeout(12000) });
+          if (!res.ok) continue;
+          const xml = await res.text();
+          const doc = new DOMParser().parseFromString(xml, 'text/xml');
+          const items = Array.from(doc.querySelectorAll('item'));
+          if (!items.length) continue;
+          return items.slice(0, 30).map(item => {
+            const title   = item.querySelector('title')?.textContent       || '';
+            const rawDesc = item.querySelector('description')?.textContent || '';
+            const link    = item.querySelector('link')?.textContent        || '#';
+            const pubDate = item.querySelector('pubDate')?.textContent     || '';
+            return {
+              title,
+              description: stripHtml(rawDesc).slice(0, 220),
+              link,
+              pubDate,
+              source:   feed.source,
+              category: categorize(title, rawDesc),
+            };
+          });
+        } catch (e) {
+          console.warn(`Proxy failed for ${feed.source}:`, e);
+        }
+      }
+      return [];
+    }
+
+    async function loadNews() {
+      document.getElementById('lastUpdated').textContent = 'Loading feeds\u2026';
+      showSkeleton();
+
+      const results = await Promise.all(FEEDS.map(fetchFeed));
+      const allItems = results.flat();
+
+      const unique = Array.from(new Map(allItems.map(i => [i.link, i])).values());
+
+      const bdKw = ['bangladesh', 'dhaka', 'bb ', 'taka', 'bdt'];
+      const allKw = Object.values(KEYWORDS).flat();
+      const relevant = unique.filter(a => {
+        const text = (a.title + ' ' + a.description).toLowerCase();
+        return bdKw.some(k => text.includes(k)) || allKw.some(k => text.includes(k));
+      });
+
+      allArticles = relevant.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+
+      if (!allArticles.length) {
+        document.getElementById('newsGrid').innerHTML = `
+          <div class="news-empty">
+            <p>Could not load news right now. Please check back shortly.</p>
+            <button class="btn-refresh" onclick="doRefresh()" style="margin-top:12px">&#8635; Try Again</button>
+          </div>`;
+        document.getElementById('lastUpdated').textContent = 'Failed to load';
+        return;
+      }
+
+      updateCounts(allArticles);
+      document.getElementById('lastUpdated').textContent =
+        `${allArticles.length} articles \u00b7 updated ${new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}`;
+
+      renderArticles(currentFilter === 'all' ? allArticles : allArticles.filter(a => a.category === currentFilter));
+    }
+
+    function doRefresh() {
+      allArticles = [];
+      loadNews();
+    }
+
+    // Wrap initialization in DOMContentLoaded to ensure elements exist when script runs inline
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.filter-tab').forEach(tab =>
+        tab.addEventListener('click', () => setFilter(tab.dataset.filter)));
+
+      document.getElementById('refreshBtn').addEventListener('click', doRefresh);
+
+      setInterval(loadNews, 30 * 60 * 1000);
+      loadNews();
+    });
+  </script>
+</Layout>

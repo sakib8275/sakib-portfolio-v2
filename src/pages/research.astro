@@ -1,0 +1,92 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Research & Publications — MD. Nazmus Sakib">
+  <Navbar />
+
+  <div class="page-hero container" style="padding: 120px 0 60px; text-align: center;">
+    <p class="section-label">Academic & Professional</p>
+    <h1 class="section-title" style="font-size: clamp(2rem, 5vw, 3.5rem);">Research & Publications</h1>
+    <p class="section-desc" style="margin: 0 auto;">Academic research and professional insights at the intersection of banking, technology and financial inclusion.</p>
+  </div>
+
+  <div class="container">
+    <div class="research-grid" style="display: grid; gap: 32px; padding: 60px 0;">
+
+      <div class="research-card featured" style="background: var(--card-bg, #0f1a2e); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 40px; border-color: rgba(0,230,180,0.3); position: relative; overflow: hidden;">
+        <div style="position: absolute; top: 20px; right: 20px; background: rgba(0,230,180,0.1); color: #00e6b4; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;">Featured Research</div>
+        
+        <div class="research-type" style="font-size: 12px; font-weight: 600; color: #00e6b4; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">📄 MBA Thesis</div>
+        <div class="research-title" style="font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 12px; line-height: 1.3;">Agent Banking: A New Growth Sector for the Banking Industry</div>
+        <div class="research-meta" style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 20px;">
+          <span style="font-size: 13px; color: rgba(255,255,255,0.5); display: flex; align-items: center; gap: 6px;">🎓 IBA, University of Dhaka</span>
+          <span style="font-size: 13px; color: rgba(255,255,255,0.5); display: flex; align-items: center; gap: 6px;">📅 2020</span>
+          <span style="font-size: 13px; color: rgba(255,255,255,0.5); display: flex; align-items: center; gap: 6px;">📊 Econometric Analysis</span>
+        </div>
+        <div class="research-abstract" style="font-size: 15px; color: rgba(255,255,255,0.7); line-height: 1.8; margin-bottom: 24px;">
+          This thesis examines the agent banking landscape in Bangladesh through an econometric lens, analysing the performance of the top 6 agent banking operators. The research explores business models, outreach strategies, and sustainability metrics to identify what separates high-performing agent banking programs from the rest.
+        </div>
+        <div class="research-insight" style="background: rgba(0,230,180,0.05); border-left: 3px solid #00e6b4; padding: 16px 20px; border-radius: 0 8px 8px 0; margin-bottom: 24px;">
+          <div class="research-insight-label" style="font-size: 11px; font-weight: 700; color: #00e6b4; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Core Finding</div>
+          <div class="research-insight-text" style="font-size: 14px; color: rgba(255,255,255,0.8); line-height: 1.7;">BRAC Bank's unique "lending-first" model was identified as a key driver for sustainable financial inclusion — contrasting sharply with the deposit-only focus of competitors. This model created a self-sustaining ecosystem that drove both financial access and profitability.</div>
+        </div>
+        <div class="research-tags" style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <span class="research-tag" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); font-size: 12px; padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);">Agent Banking</span>
+          <span class="research-tag" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); font-size: 12px; padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);">Financial Inclusion</span>
+          <span class="research-tag" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); font-size: 12px; padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);">Bangladesh</span>
+          <span class="research-tag" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); font-size: 12px; padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);">Econometrics</span>
+          <span class="research-tag" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); font-size: 12px; padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);">Islamic Banking</span>
+          <span class="research-tag" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); font-size: 12px; padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);">DFS</span>
+        </div>
+        <div class="research-actions" style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px;">
+          <a href="/research/agent-banking-bd" class="research-btn primary" style="background: linear-gradient(135deg,#00d4aa,#6366f1); color: #fff; box-shadow: 0 4px 14px rgba(99,102,241,0.25); display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; padding: 9px 20px; border-radius: 8px; text-decoration: none; transition: all 0.2s;">Read Full Analysis →</a>
+          <a href="/research-files/Agent Banking- A new growth Sector for banking industry.pdf" class="research-btn outline" style="border: 1px solid rgba(99,120,180,0.25); color: rgba(232,238,255,0.75); display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; padding: 9px 20px; border-radius: 8px; text-decoration: none; transition: all 0.2s;" target="_blank" rel="noopener">⬇ Download PDF</a>
+        </div>
+      </div>
+
+      <div class="research-card" style="background: var(--card-bg, #0f1a2e); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 40px;">
+        <div class="pub-pill" style="display: inline-flex; align-items: center; gap: 8px; background: rgba(0,212,170,0.08); border: 1px solid rgba(0,212,170,0.22); border-radius: 8px; padding: 8px 14px; margin-bottom: 20px; font-size: 12px; color: rgba(232,238,255,0.6);">
+          <strong style="color: #4dffd8;">Published</strong> · Wireless Sensor Network, Vol. 9, pp. 73–86 · February 2017
+        </div>
+        <div class="research-type" style="font-size: 12px; font-weight: 600; color: #00e6b4; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">🔬 BSc Published Paper · Computer Science &amp; Engineering</div>
+        <div class="research-title" style="font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 12px; line-height: 1.3;">Improved Self-Pruning for Broadcasting in Ad Hoc Wireless Networks</div>
+        <div class="research-meta" style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 20px;">
+          <span style="font-size: 13px; color: rgba(255,255,255,0.5); display: flex; align-items: center; gap: 6px;">🎓 AUST, Dhaka</span>
+          <span style="font-size: 13px; color: rgba(255,255,255,0.5); display: flex; align-items: center; gap: 6px;">📅 2017</span>
+          <span style="font-size: 13px; color: rgba(255,255,255,0.5); display: flex; align-items: center; gap: 6px;">🛜 Wireless Networks · Algorithms</span>
+        </div>
+        <div class="research-abstract" style="font-size: 15px; color: rgba(255,255,255,0.7); line-height: 1.8; margin-bottom: 24px;">
+          Proposes the ISB (Improved Self-Pruning Based Broadcasting) algorithm — a reactive broadcasting technique that uses extended three-hop neighbour knowledge to dramatically reduce the number of forwarding nodes while keeping packet headers minimal. Simulation results show ISB outperforms both self-pruning and dominant pruning across all tested network densities.
+        </div>
+        <div class="research-insight" style="background: rgba(0,230,180,0.05); border-left: 3px solid #00e6b4; padding: 16px 20px; border-radius: 0 8px 8px 0; margin-bottom: 24px;">
+          <div class="research-insight-label" style="font-size: 11px; font-weight: 700; color: #00e6b4; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Key Result</div>
+          <div class="research-insight-text" style="font-size: 14px; color: rgba(255,255,255,0.8); line-height: 1.7;">ISB reduced redundant rebroadcasts by up to 40% compared to classic self-pruning, while maintaining near-100% delivery coverage — demonstrating that three-hop knowledge is sufficient for near-optimal broadcast coverage in ad-hoc networks.</div>
+        </div>
+        <div class="research-tags" style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <span class="research-tag" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); font-size: 12px; padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);">Wireless Sensor Networks</span>
+          <span class="research-tag" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); font-size: 12px; padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);">Broadcasting Algorithms</span>
+          <span class="research-tag" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); font-size: 12px; padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);">Ad Hoc Networks</span>
+          <span class="research-tag" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); font-size: 12px; padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);">Self-Pruning</span>
+          <span class="research-tag" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); font-size: 12px; padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);">ISB Algorithm</span>
+          <span class="research-tag" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); font-size: 12px; padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);">Network Simulation</span>
+        </div>
+        <div class="research-actions" style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px;">
+          <a href="/research/wsn-improved-self-pruning" class="research-btn primary" style="background: linear-gradient(135deg,#00d4aa,#6366f1); color: #fff; box-shadow: 0 4px 14px rgba(99,102,241,0.25); display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; padding: 9px 20px; border-radius: 8px; text-decoration: none; transition: all 0.2s;">Read Full Paper →</a>
+          <a href="/research-files/WSN_2017022116034458.pdf" class="research-btn outline" style="border: 1px solid rgba(99,120,180,0.25); color: rgba(232,238,255,0.75); display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; padding: 9px 20px; border-radius: 8px; text-decoration: none; transition: all 0.2s;" target="_blank" rel="noopener">⬇ Download PDF</a>
+        </div>
+      </div>
+
+      <div class="upcoming-card" style="border: 1px dashed rgba(255,255,255,0.15); border-radius: 16px; padding: 40px; text-align: center; color: rgba(255,255,255,0.4);">
+        <div style="font-size: 40px; margin-bottom: 16px;">✍️</div>
+        <h3 style="color: rgba(255,255,255,0.6); font-size: 18px; margin-bottom: 8px;">More Research Coming Soon</h3>
+        <p>Working on new research covering digital payment governance, CBS integration patterns, and fintech regulatory frameworks in Bangladesh.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <Footer />
+</Layout>

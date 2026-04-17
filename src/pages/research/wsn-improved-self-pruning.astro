@@ -1,0 +1,538 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<Layout title="Improved Self-Pruning for Broadcasting in Ad Hoc Wireless Networks — MD. Nazmus Sakib">
+  <Navbar />
+
+  <main class="article-page">
+
+    <a href="/research" class="article-back-link">← Back to Research</a>
+
+    <!-- Publication badge -->
+    <div class="pub-badge">
+      <span class="pub-badge-label">Published in</span>
+      <span class="pub-badge-value">Wireless Sensor Network</span>
+      <span class="pub-badge-sep">·</span>
+      <span class="pub-badge-label">Vol. 9, pp. 73–86</span>
+      <span class="pub-badge-sep">·</span>
+      <span class="pub-badge-value">February 2017</span>
+    </div>
+
+    <header class="article-header">
+      <p class="section-label article-label">Published Research · Computer Science &amp; Engineering</p>
+      <h1 class="article-title">Improved Self-Pruning for Broadcasting in Ad Hoc Wireless Networks</h1>
+      <p class="article-subtitle">Proposing the ISB algorithm — a reactive broadcasting technique that uses extended three-hop neighbor knowledge to dramatically reduce forwarding nodes while keeping packet headers minimal, outperforming both self-pruning and dominant pruning across all network conditions.</p>
+
+      <div class="article-meta-row">
+        <span class="article-meta-item">📅 February 21, 2017</span>
+        <span class="article-meta-item">⏱ 10 min read</span>
+        <span class="article-meta-item">🎓 BSc Thesis, AUST</span>
+      </div>
+
+      <div class="authors-block">
+        <div class="authors-label">Authors</div>
+        <div class="authors-list">
+          <span class="author-chip">Raqeebir Rab</span>
+          <span class="author-chip">Shaheed Ahmed Dewan Sagar</span>
+          <span class="author-chip me">Nazmus Sakib</span>
+          <span class="author-chip">Ahasanul Haque</span>
+          <span class="author-chip">Majedul Islam</span>
+          <span class="author-chip">Ashikur Rahman (BUET)</span>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <a href="https://doi.org/10.4236/wsn.2017.92004" target="_blank" rel="noopener" class="doi-link">
+          🔗 DOI: 10.4236/wsn.2017.92004
+        </a>
+      </div>
+
+      <div class="article-tags-row">
+        <span class="tag">Wireless Networks</span>
+        <span class="tag">Broadcasting Algorithms</span>
+        <span class="tag">Ad Hoc Networks</span>
+        <span class="tag">Self-Pruning</span>
+        <span class="tag">Network Optimization</span>
+        <span class="tag">Computer Science</span>
+      </div>
+    </header>
+
+    <div class="article-body">
+
+      <h2>Abstract</h2>
+      <p>
+        Reducing the number of forwarding nodes is the primary goal of any broadcasting algorithm designed
+        for ad-hoc wireless networks. All reliable broadcasting techniques broadly fall under two categories:
+        <strong>proactive</strong> approaches (where a node selects forwarding nodes and announces the
+        forwarding list in the packet header) and <strong>reactive</strong> approaches (where each node
+        cognitively determines by itself whether to forward the packet based on neighbor information).
+      </p>
+      <p>
+        Dominant pruning shows better performance than self-pruning by using extended two-hop neighbor
+        knowledge. However, appending a forwarding node list to the packet header increases message overhead
+        and consumes more bandwidth — making the approach <em>non-scalable</em> in large networks.
+      </p>
+      <p>
+        In this paper, we propose a reactive broadcasting technique — the <strong>Improved Self-Pruning
+        based Broadcasting (ISB)</strong> algorithm — that completes the broadcast with a smaller packet
+        header (i.e., no overhead) while using extended neighbor knowledge. Simulation results show that
+        ISB outperforms both dominant pruning and self-pruning, with performance advantages compounding
+        as the network grows denser and wider in transmission range.
+      </p>
+
+      <h2>Background: The Broadcasting Problem</h2>
+      <p>
+        A wireless ad hoc network (MANET) is a collection of two or more devices forming self-generated
+        mobile networks with no pre-existing infrastructure — each node acts as its own router, communicating
+        peer-to-peer. The network topology is never static; node mobility is high and available bandwidth
+        is limited.
+      </p>
+      <p>
+        Simple flooding — where every node rebroadcasts to all its neighbors — ensures full packet
+        delivery but causes severe redundancy, contention, and the <strong>broadcast storm problem</strong>.
+        In practice, only a fraction of nodes receive the broadcast under flooding due to collisions.
+        Intelligently selecting intermediate forwarding nodes can significantly reduce this problem.
+      </p>
+
+      <blockquote>
+        The key challenge: reduce the number of forwarding nodes (and thus bandwidth consumption and energy
+        expenditure) without sacrificing broadcast coverage reliability.
+      </blockquote>
+
+      <h3>Self-Pruning (Reactive, 1-hop)</h3>
+      <p>
+        In self-pruning, a node J receiving a packet from sender I will forward only if the set
+        N(J) − N(I) is non-empty — i.e., only if J has neighbours that sender I could not already have
+        reached. This uses only one-hop neighbour information, requires no packet header modification,
+        but misses redundancy that could be detected with wider neighbourhood knowledge.
+      </p>
+
+      <h3>Dominant Pruning (Proactive, 2-hop)</h3>
+      <p>
+        Dominant pruning uses two-hop neighbourhood information, allowing nodes to make more informed
+        forwarding decisions and prune more aggressively. However, to enable this, each node must
+        append its forwarding list to the packet header — increasing packet size with the network,
+        making it non-scalable in large, dense deployments.
+      </p>
+
+      <h2>The ISB Algorithm</h2>
+      <p>
+        ISB combines the best of both: it uses <strong>extended (3-hop equivalent) neighbour
+        knowledge</strong> for forwarding decisions, like dominant pruning — but remains
+        <strong>reactive with no header overhead</strong>, like self-pruning.
+      </p>
+      <p>
+        The core idea: when node <em>v</em> receives a broadcast packet from node <em>u</em>, it constructs
+        a set U<sub>(u,v)</sub> representing the neighbours it alone can cover. It first removes N(u) from
+        N(v) (already covered by sender), then removes the neighbours of all nodes in N(u) that have
+        <em>more</em> neighbours than v (those more connected neighbours can cover them better). If
+        U<sub>(u,v)</sub> is empty, v drops the packet. Otherwise, v rebroadcasts.
+      </p>
+
+      <div class="algo-box">
+        <div class="algo-box-title">Algorithm 1 — Improved Self-Pruning Based Broadcast (ISB)</div>
+        <code><em>Precondition:</em> Node v receives an unseen packet m from u
+<em>Require:</em> v ∈ N(u)
+
+1:  U(u,v) = N(v) − N(u)
+2:  <em>for each</em> x ∈ N(u) <em>do</em>
+3:    <em>if</em> |N(x)| > |N(v)| <em>then</em>
+4:      U(u,v) = U(u,v) − N(x)
+5:    <em>each if</em> |N(x)| = |N(v)| <em>and</em> id(x) &lt; id(v) <em>then</em>
+6:      U(u,v) = U(u,v) − N(x)
+7:    <em>end if</em>
+8:  <em>end for</em>
+9:  <em>if</em> U(u,v) = ∅ <em>then</em>
+10:   Drop the packet.
+11: <em>else</em>
+12:   Rebroadcast the packet.
+13: <em>end if</em></code>
+      </div>
+
+      <p>
+        The tie-breaking policy in Line 5 ensures determinism when two nodes have equal numbers of
+        neighbours: the node with the lower ID takes responsibility. This eliminates duplicate forwarding
+        decisions without requiring any coordination between nodes.
+      </p>
+
+      <h2>Simulation Results</h2>
+      <p>
+        We implemented ISB alongside self-pruning and dominant pruning in Java and ran simulations
+        across randomly deployed networks of <strong>100 to 500 nodes</strong> in a fixed
+        625 m × 625 m area. Transmission range varied from 125 m to 225 m. The metric used is
+        the <strong>number of forwarding nodes</strong> — lower is better.
+      </p>
+
+      <div class="results-summary">
+        <div class="result-stat">
+          <div class="result-stat-value">~75%</div>
+          <div class="result-stat-label">Reduction vs Self-Pruning (dense)</div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-value">~60%</div>
+          <div class="result-stat-label">Reduction vs Dominant Pruning (dense)</div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-value">0</div>
+          <div class="result-stat-label">Extra Header Overhead</div>
+        </div>
+      </div>
+
+      <h3>Sparse Networks (100 Nodes)</h3>
+      <p>
+        Even in sparse networks, ISB requires significantly fewer forwarding nodes than its competitors.
+        At a transmission range of 125 m, ISB uses approximately 40 forwarding nodes vs 75 for
+        self-pruning and 60 for dominant pruning. The advantage grows as range increases.
+      </p>
+
+      <div class="chart-container">
+        <div class="chart-container-title">Figure 4 — Forwarding Nodes in Sparse Network (100 Nodes) vs Transmission Range</div>
+        <div class="chart-wrap">
+          <canvas id="chart1"></canvas>
+        </div>
+      </div>
+
+      <h3>Moderately Dense Networks (350 Nodes)</h3>
+      <p>
+        As network density increases to 350 nodes, the performance gap widens substantially. Self-pruning
+        plateaus near its maximum (~315 forwarding nodes regardless of range), while ISB continues to
+        improve with wider transmission range — dropping to as low as ~50 forwarding nodes at 225 m.
+      </p>
+
+      <div class="chart-container">
+        <div class="chart-container-title">Figure 5 — Forwarding Nodes in Moderately Dense Network (350 Nodes) vs Transmission Range</div>
+        <div class="chart-wrap">
+          <canvas id="chart2"></canvas>
+        </div>
+      </div>
+
+      <h3>Dense Networks (500 Nodes)</h3>
+      <p>
+        In dense networks, the advantage of ISB is most dramatic. Self-pruning becomes nearly
+        useless (~460 forwarding nodes), dominant pruning improves significantly with range but
+        still requires 200–350 forwarders, while ISB maintains the lowest count of 50–130 across
+        all tested ranges.
+      </p>
+
+      <div class="chart-container">
+        <div class="chart-container-title">Figure 6 — Forwarding Nodes in Dense Network (500 Nodes) vs Transmission Range</div>
+        <div class="chart-wrap">
+          <canvas id="chart3"></canvas>
+        </div>
+      </div>
+
+      <h3>Effect of Node Density (Fixed 150 m Range)</h3>
+      <p>
+        Holding transmission range constant at 150 m, the number of forwarding nodes grows
+        linearly for self-pruning and dominant pruning as the network scales from 100 to 500 nodes.
+        For ISB, growth is almost negligible — confirming that ISB's efficiency scales with
+        network complexity rather than degrading.
+      </p>
+
+      <div class="chart-container">
+        <div class="chart-container-title">Figure 7 — Forwarding Nodes vs Node Count (Fixed 150 m Transmission Range)</div>
+        <div class="chart-wrap">
+          <canvas id="chart4"></canvas>
+        </div>
+      </div>
+
+      <h2>Key Findings</h2>
+      <ul>
+        <li><strong>ISB consistently outperforms</strong> both self-pruning and dominant pruning across all network conditions — sparse, moderate, and dense.</li>
+        <li><strong>Performance advantage grows with density:</strong> as networks get denser, ISB's extended neighbour knowledge becomes more effective at identifying truly redundant forwarders.</li>
+        <li><strong>Performance advantage grows with range:</strong> larger transmission ranges give more nodes the opportunity to detect redundancy — ISB exploits this better than its competitors.</li>
+        <li><strong>Zero overhead:</strong> unlike dominant pruning, ISB requires no forwarding list in the packet header, keeping the approach reactive and scalable.</li>
+        <li>In the 12-node example topology, self-pruning, dominant pruning, and ISB require 11, 7, and <strong>6 forwarding nodes</strong> respectively — ISB is within one of the theoretical optimum of 5.</li>
+      </ul>
+
+      <blockquote>
+        The performance of ISB increases as the network becomes denser and the transmission range widens —
+        precisely the conditions where scalable broadcasting matters most.
+      </blockquote>
+
+      <h2>Conclusions</h2>
+      <p>
+        Broadcasting is a fundamental problem in wireless ad hoc networks. This paper proposed ISB —
+        an improved self-pruning broadcasting technique that incurs minimal redundancy by reducing
+        forwarding nodes significantly while maintaining zero packet header overhead.
+      </p>
+      <p>
+        The technique is effective for route discovery, periodic alarm signalling, data dissemination,
+        and clock synchronisation in ad hoc networks. Future work will focus on reducing the
+        neighbourhood information requirements further, potentially extending ISB to heterogeneous
+        networks where nodes have different transmission ranges and battery capacities.
+      </p>
+      <p>
+        This research was conducted as part of my BSc thesis at the Department of Computer Science
+        and Engineering, Ahsanullah University of Science and Technology, Dhaka, Bangladesh, and
+        published in the <em>Wireless Sensor Network</em> journal (Scientific Research Publishing)
+        in February 2017.
+      </p>
+
+    </div>
+
+  </main>
+
+  <Footer />
+</Layout>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+  // Add an event listener to run Chart.js code after the library is loaded
+  document.addEventListener('DOMContentLoaded', () => {
+    Chart.defaults.color = '#94a3b8';
+    Chart.defaults.borderColor = 'rgba(148,163,184,0.12)';
+
+    const COLORS = {
+      isp:  { border: '#14b8a6', bg: 'rgba(20,184,166,0.2)',  point: '#14b8a6'  },
+      dp:   { border: '#a78bfa', bg: 'rgba(167,139,250,0.15)', point: '#a78bfa' },
+      sp:   { border: '#f87171', bg: 'rgba(248,113,113,0.1)',  point: '#f87171' },
+    };
+    const GRID   = 'rgba(148,163,184,0.06)';
+    const TIPOPT = {
+      backgroundColor: '#1e293b',
+      borderColor: '#14b8a6',
+      borderWidth: 1,
+      titleColor: '#e2e8f0',
+      bodyColor: '#94a3b8',
+      padding: 10,
+    };
+
+    function lineDataset(label, data, c, tension = 0.35) {
+      return {
+        label,
+        data,
+        borderColor: c.border,
+        backgroundColor: c.bg,
+        pointBackgroundColor: c.point,
+        pointBorderColor: '#0f172a',
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        fill: false,
+        tension,
+        borderWidth: 2,
+      };
+    }
+
+    const xLabels = ['125', '140', '160', '180', '200', '225'];
+    const nodeLabels = ['100', '150', '200', '250', '300', '350', '400', '450', '500'];
+
+    const commonOpts = (yTitle) => ({
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          labels: { color: '#94a3b8', font: { size: 12 }, boxWidth: 14, padding: 20 }
+        },
+        tooltip: TIPOPT,
+      },
+      scales: {
+        x: {
+          grid: { color: GRID },
+          title: { display: true, text: 'Transmission Range (m)', color: '#64748b', font: { size: 11 } }
+        },
+        y: {
+          grid: { color: GRID },
+          title: { display: true, text: yTitle, color: '#64748b', font: { size: 11 } },
+          ticks: { callback: (v: any) => v }
+        }
+      }
+    });
+
+    // Chart 1 — Sparse (100 nodes)
+    new Chart(document.getElementById('chart1').getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: xLabels,
+        datasets: [
+          lineDataset('Self-Pruning',          [78, 80, 82, 81, 83, 85], COLORS.sp),
+          lineDataset('Dominant Pruning',      [60, 62, 58, 55, 50, 48], COLORS.dp),
+          lineDataset('Improved Self-Pruning', [40, 36, 32, 28, 24, 20], COLORS.isp),
+        ]
+      },
+      options: commonOpts('Number of Forwarding Nodes'),
+    });
+
+    // Chart 2 — Moderately dense (350 nodes)
+    new Chart(document.getElementById('chart2').getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: xLabels,
+        datasets: [
+          lineDataset('Self-Pruning',          [315, 312, 318, 315, 320, 316], COLORS.sp),
+          lineDataset('Dominant Pruning',      [248, 232, 210, 188, 165, 155], COLORS.dp),
+          lineDataset('Improved Self-Pruning', [110, 95,  78,  65,  55,  48 ], COLORS.isp),
+        ]
+      },
+      options: commonOpts('Number of Forwarding Nodes'),
+    });
+
+    // Chart 3 — Dense (500 nodes)
+    new Chart(document.getElementById('chart3').getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: xLabels,
+        datasets: [
+          lineDataset('Self-Pruning',          [460, 462, 460, 465, 460, 462], COLORS.sp),
+          lineDataset('Dominant Pruning',      [350, 325, 290, 255, 225, 200], COLORS.dp),
+          lineDataset('Improved Self-Pruning', [135, 115,  95,  75,  60,  50], COLORS.isp),
+        ]
+      },
+      options: commonOpts('Number of Forwarding Nodes'),
+    });
+
+    // Chart 4 — Node density (150m fixed range)
+    new Chart(document.getElementById('chart4').getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: nodeLabels,
+        datasets: [
+          lineDataset('Self-Pruning',          [75, 120, 180, 240, 300, 360, 400, 430, 460], COLORS.sp),
+          lineDataset('Dominant Pruning',      [58,  90, 130, 170, 210, 255, 285, 310, 330], COLORS.dp),
+          lineDataset('Improved Self-Pruning', [38,  48,  55,  63,  68,  74,  80,  88,  95], COLORS.isp),
+        ]
+      },
+      options: {
+        ...commonOpts('Number of Forwarding Nodes'),
+        scales: {
+          x: {
+            grid: { color: GRID },
+            title: { display: true, text: 'Number of Nodes', color: '#64748b', font: { size: 11 } }
+          },
+          y: {
+            grid: { color: GRID },
+            title: { display: true, text: 'Number of Forwarding Nodes', color: '#64748b', font: { size: 11 } }
+          }
+        }
+      }
+    });
+
+  });
+</script>
+
+<style>
+  .pub-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent-glow);
+    border: 1px solid rgba(20,184,166,0.3);
+    border-radius: 8px;
+    padding: 10px 16px;
+    margin-bottom: 24px;
+    font-size: 0.825rem;
+  }
+  .pub-badge-label { color: var(--text-muted); }
+  .pub-badge-value { color: var(--accent-light); font-weight: 600; }
+  .pub-badge-sep { color: var(--text-muted); }
+
+  .authors-block {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin: 28px 0;
+  }
+  .authors-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+  .authors-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .author-chip {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+  .author-chip.me {
+    color: var(--accent-light);
+    border-color: rgba(20,184,166,0.4);
+    background: var(--accent-glow);
+    font-weight: 600;
+  }
+
+  .doi-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-family: 'Inter', monospace;
+    transition: color var(--transition);
+  }
+  .doi-link:hover { color: var(--accent-light); text-decoration: underline; }
+
+  .algo-box {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 20px 24px;
+    margin: 28px 0;
+    font-size: 0.875rem;
+  }
+  .algo-box-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .algo-box code {
+    display: block;
+    font-family: 'Courier New', monospace;
+    font-size: 0.825rem;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    white-space: pre;
+  }
+  .algo-box code em { color: var(--accent-light); font-style: normal; }
+
+  .results-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 32px 0;
+  }
+  .result-stat {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+  }
+  .result-stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--accent-light);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .result-stat-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  @media (max-width: 640px) {
+    .results-summary { grid-template-columns: 1fr; }
+    .algo-box code { white-space: pre-wrap; }
+  }
+</style>
